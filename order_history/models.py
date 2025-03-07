@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from menu.models import Menu  # Assuming Menu model exists in the 'menu' app
+from accounts.models import Customer
 
 class OrderHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # The customer who placed the order
@@ -19,12 +20,13 @@ class OrderHistory(models.Model):
 
 
 class Review(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # User who wrote the review
-    menu_item = models.ForeignKey(Menu, on_delete=models.CASCADE)  # Reviewed food item
-    order = models.ForeignKey(OrderHistory, on_delete=models.CASCADE)  # Order associated with the review
-    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])  # Rating (1-5 stars)
-    comment = models.TextField(blank=True, null=True)  # Optional review comment
-    created_at = models.DateTimeField(auto_now_add=True)  # Timestamp
+    order = models.ForeignKey(OrderHistory, on_delete=models.CASCADE)
+    user = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    menu_item = models.ForeignKey(Menu, on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    comment = models.TextField(blank=True,null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
 
     def __str__(self):
         return f"{self.user.username} - {self.menu_item.name} ({self.rating} stars)"
